@@ -1,8 +1,6 @@
 import { z } from "zod";
 
 export const createApplicationSchema = z.object({
-  jobId: z.string().uuid().optional(),
-  
   firstName: z.string().min(1, "First name is required"),
   middleName: z.string().optional(),
   lastName: z.string().min(1, "Last name is required"),
@@ -33,15 +31,6 @@ export const createApplicationSchema = z.object({
   expectedCtc: z.string().optional(),
   noticePeriod: z.string().optional(),
   employmentStatus: z.string().optional(),
-  
-  // 10th & 12th Specific Fields (Common in ATS forms)
-  tenthBoard: z.string().optional(),
-  tenthPercentage: z.string().optional(),
-  tenthYear: z.string().optional(),
-  twelfthBoard: z.string().optional(),
-  twelfthPercentage: z.string().optional(),
-  twelfthYear: z.string().optional(),
-  twelfthStream: z.string().optional(),
   
   // Nested Arrays
   educations: z.array(z.object({

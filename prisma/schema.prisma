@@ -7,21 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Job {
-  id          String      @id @default(uuid())
-  title       String
-  department  String?
-  location    String?
-  description String?
-  candidates  Candidate[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-}
-
 model Candidate {
   id                String            @id @default(uuid())
-  jobId             String?
-  job               Job?              @relation(fields: [jobId], references: [id])
   
   firstName         String
   middleName        String?
@@ -52,15 +39,6 @@ model Candidate {
   expectedCtc       String?
   noticePeriod      String?
   employmentStatus  String?
-  
-  // 10th & 12th Data
-  // tenthBoard        String?
-  // tenthPercentage   String?
-  // tenthYear         String?
-  // twelfthBoard      String?
-  // twelfthPercentage String?
-  // twelfthYear       String?
-  // twelfthStream     String?
   
   // Relational Sections
   educations        Education[]
