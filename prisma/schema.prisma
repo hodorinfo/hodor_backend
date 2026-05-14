@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id          String      @id @default(uuid())
+  title       String
+  department  String?
+  location    String?
+  description String?
+  candidates  Candidate[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Candidate {
+  id                String            @id @default(uuid())
+  jobId             String?
+  job               Job?              @relation(fields: [jobId], references: [id])
+  
+  firstName         String
+  middleName        String?
+  lastName          String
+  gender            String?
+  dob               DateTime?
+  nationality       String?
+  maritalStatus     String?
+  
+  email             String            @unique
+  phone             String
+  secondaryPhone    String?
+  whatsappNumber    String?
+  
+  address           String?
+  city              String?
+  state             String?
+  zip               String?
+  
+  linkedin          String?
+  github            String?
+  
+  objective         String?
+  summary           String?
+  
+  totalExperience   String?
+  currentCtc        String?
+  expectedCtc       String?
+  noticePeriod      String?
+  employmentStatus  String?
+  
+  // 10th & 12th Data
+  // tenthBoard        String?
+  // tenthPercentage   String?
+  // tenthYear         String?
+  // twelfthBoard      String?
+  // twelfthPercentage String?
+  // twelfthYear       String?
+  // twelfthStream     String?
+  
+  // Relational Sections
+  educations        Education[]
+  experiences       Experience[]
+  projects          Project[]
+  certifications    Certification[]
+  achievements      Achievement[]
+  socialLinks       SocialLink[]
+  skills            CandidateSkill[]
+
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model Education {
+  id                     String    @id @default(uuid())
+  candidateId            String
+  candidate              Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  level                  String
+  schoolOrCollege        String
+  boardOrUniversity      String?
+  streamOrSpecialization String?
+  passingYear            String?
+  percentageOrCgpa       String?
+  courseType             String?
+  startYear              String?
+}
+
+model Experience {
+  id             String    @id @default(uuid())
+  candidateId    String
+  candidate      Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  jobTitle       String
+  companyName    String
+  role           String?
+  employmentType String?
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  title       String
+  type        String?
+  description String?
+  liveUrl     String?
+  githubUrl   String?
+}
+
+model Certification {
+  id          String    @id @default(uuid())
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  name        String
+  issuingOrg  String?
+}
+
+model Achievement {
+  id          String    @id @default(uuid())
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  title       String
+  orgName     String?
+  dateReceived DateTime?
+  description String?
+}
+
+model SocialLink {
+  id          String    @id @default(uuid())
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  platform    String
+  url         String
+}
+
+model Skill {
+  id         String           @id @default(uuid())
+  name       String           @unique
+  candidates CandidateSkill[]
+}
+
+model CandidateSkill {
+  candidateId String
+  skillId     String
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  skill       Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([candidateId, skillId])
+}
