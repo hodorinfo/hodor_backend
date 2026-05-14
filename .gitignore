@@ -28,9 +28,14 @@ out/
 *.tsbuildinfo
 
 # ── Prisma ────────────────────────────────────────────────────────────────────
-# Generated client (regenerated via `prisma generate`)
+# Generated client
 /generated/
 node_modules/.prisma/
+
+# Local SQLite databases (if used for testing/local dev)
+*.db
+*.db-journal
+*.sqlite
 
 # ── Logs ──────────────────────────────────────────────────────────────────────
 logs/
