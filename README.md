@@ -40,12 +40,19 @@ PORT=5000
 
 ### 2. Set Up Database
 
+Because migration history is intentionally not pushed to GitHub, you will need to push the Prisma schema directly to your new database or create a fresh local migration.
+
+Option A — Push schema directly (Recommended for quick start):
 ```bash
-npx prisma migrate deploy
-npx prisma generate
+npx prisma db push
 ```
 
-> ⚠️ **Windows:** Stop the dev server before running `prisma generate` to avoid a file lock error.
+Option B — Create a fresh local migration:
+```bash
+npx prisma migrate dev --name init
+```
+
+> ⚠️ **Windows:** Stop the dev server before running the above commands to avoid a file lock error (`EPERM`) on the Prisma query engine file.
 
 ### 3. Run
 

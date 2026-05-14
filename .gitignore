@@ -32,6 +32,9 @@ out/
 /generated/
 node_modules/.prisma/
 
+# Ignore migration history
+prisma/migrations/
+
 # Local SQLite databases (if used for testing/local dev)
 *.db
 *.db-journal
