@@ -15,21 +15,51 @@ export class ApplicationService {
     } = data;
 
     return await prisma.$transaction(async (tx) => {
-      // 1. Create the main Candidate record
+      // 1. Create the main Candidate record (flat insertion to avoid slow sequential nested inserts)
       const candidate = await tx.candidate.create({
-        data: {
-          ...candidateData,
-          // Nested creates for simple 1:N relations
-          educations: { create: educations },
-          experiences: { create: experiences },
-          projects: { create: projects },
-          certifications: { create: certifications },
-          achievements: { create: achievements },
-          socialLinks: { create: socialLinks },
-        },
+        data: candidateData,
       });
 
-      // 2. Handle Skills in Bulk to avoid sequential database queries
+      const candidateId = candidate.id;
+
+      // 2. Bulk Insert all child relations to minimize database roundtrips (1 query per table instead of N queries)
+      if (educations && educations.length > 0) {
+        await tx.education.createMany({
+          data: educations.map((e) => ({ ...e, candidateId })),
+        });
+      }
+
+      if (experiences && experiences.length > 0) {
+        await tx.experience.createMany({
+          data: experiences.map((e) => ({ ...e, candidateId })),
+        });
+      }
+
+      if (projects && projects.length > 0) {
+        await tx.project.createMany({
+          data: projects.map((p) => ({ ...p, candidateId })),
+        });
+      }
+
+      if (certifications && certifications.length > 0) {
+        await tx.certification.createMany({
+          data: certifications.map((c) => ({ ...c, candidateId })),
+        });
+      }
+
+      if (achievements && achievements.length > 0) {
+        await tx.achievement.createMany({
+          data: achievements.map((a) => ({ ...a, candidateId })),
+        });
+      }
+
+      if (socialLinks && socialLinks.length > 0) {
+        await tx.socialLink.createMany({
+          data: socialLinks.map((s) => ({ ...s, candidateId })),
+        });
+      }
+
+      // 3. Handle Skills in Bulk to avoid sequential database queries
       if (skills && skills.length > 0) {
         // Clean skill names (trim and filter out empty strings)
         const uniqueSkillNames = Array.from(
@@ -61,7 +91,7 @@ export class ApplicationService {
           // D. Bulk insert all relations in CandidateSkill in a single roundtrip
           await tx.candidateSkill.createMany({
             data: allSkills.map((skill) => ({
-              candidateId: candidate.id,
+              candidateId,
               skillId: skill.id,
             })),
             skipDuplicates: true,
