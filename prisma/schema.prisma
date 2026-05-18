@@ -51,6 +51,8 @@ model Candidate {
 
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
+
+  @@index([createdAt])
 }
 
 model Education {
@@ -66,6 +68,8 @@ model Education {
   percentageOrCgpa       String?
   courseType             String?
   startYear              String?
+
+  @@index([candidateId])
 }
 
 model Experience {
@@ -77,6 +81,8 @@ model Experience {
   companyName    String
   role           String?
   employmentType String?
+
+  @@index([candidateId])
 }
 
 model Project {
@@ -89,6 +95,8 @@ model Project {
   description String?
   liveUrl     String?
   githubUrl   String?
+
+  @@index([candidateId])
 }
 
 model Certification {
@@ -98,6 +106,8 @@ model Certification {
   
   name        String
   issuingOrg  String?
+
+  @@index([candidateId])
 }
 
 model Achievement {
@@ -109,6 +119,8 @@ model Achievement {
   orgName     String?
   dateReceived DateTime?
   description String?
+
+  @@index([candidateId])
 }
 
 model SocialLink {
@@ -118,6 +130,8 @@ model SocialLink {
   
   platform    String
   url         String
+
+  @@index([candidateId])
 }
 
 model Skill {
@@ -133,4 +147,5 @@ model CandidateSkill {
   skill       Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
 
   @@id([candidateId, skillId])
+  @@index([skillId])
 }
